@@ -1,0 +1,8 @@
+# Ignora caches criados pelo Python.
+__pycache__/
+# Ignora arquivos Python compilados.
+*.pyc
+# Ignora o ambiente virtual local, caso exista fora do laboratório.
+.venv/
+# Ignora metadados do Git.
+.git/

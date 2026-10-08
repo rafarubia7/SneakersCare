@@ -1,0 +1,48 @@
+# Define os serviços que formam a aplicação.
+services:
+  # Serviço da aplicação web Flask.
+  web:
+    # Constrói a imagem da aplicação usando o Dockerfile desta pasta.
+    build: .
+    # Publica a porta 5000 do container na porta 5000 do computador.
+    ports:
+      - "5000:5000"
+    # Passa para o Flask os dados necessários para acessar o MySQL.
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: cadastro_db
+      DB_USER: cadastro_user
+      DB_PASSWORD: cadastro123
+    # Só inicia o serviço web depois que o MySQL estiver saudável.
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Serviço do banco de dados MySQL.
+  db:
+    # Usa a imagem oficial do MySQL 8.4.
+    image: mysql:8.4
+    # Define banco, usuário e senhas criados na primeira inicialização.
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: cadastro_db
+      MYSQL_USER: cadastro_user
+      MYSQL_PASSWORD: cadastro123
+    # Mantém os arquivos do banco em um volume Docker nomeado.
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # Monta o script SQL no diretório de inicialização da imagem MySQL.
+      # O MySQL executa este arquivo automaticamente em um banco novo.
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    # Verifica se o MySQL já está pronto para receber conexões.
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+# Declara o volume utilizado para persistir os dados do MySQL.
+volumes:
+  mysql_data:

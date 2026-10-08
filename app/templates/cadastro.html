@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro — SneakersCare</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .form-grid {display: grid; grid-template-columns: 1fr 1fr; gap: 12px;}
+        .full {grid-column: 1 / -1}
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>Cadastre seu Sneaker</h1>
+        <p>Preencha os dados do responsável e do sneaker. Entraremos em contato para o prazo e orçamento.</p>
+
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+            {% if mensagens %}
+                {% for categoria, mensagem in mensagens %}
+                    <div class="mensagem {{ categoria }}">{{ mensagem }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('cadastrar') }}" method="post">
+            <fieldset>
+                <legend>Dados do responsável</legend>
+                <div class="form-grid">
+                    <div>
+                        <label for="nome_responsavel">Nome</label>
+                        <input id="nome_responsavel" name="nome_responsavel" type="text" maxlength="100" required>
+                    </div>
+                    <div>
+                        <label for="telefone">Telefone</label>
+                        <input id="telefone" name="telefone" type="tel" maxlength="20" required>
+                    </div>
+                    <div class="full">
+                        <label for="email">E-mail</label>
+                        <input id="email" name="email" type="email" maxlength="150" required>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Dados do Sneaker</legend>
+                <div class="form-grid">
+                    <div>
+                        <label for="sneaker_nome">Nome do Sneaker</label>
+                        <input id="sneaker_nome" name="sneaker_nome" type="text" maxlength="100" required>
+                    </div>
+                    <div>
+                        <label for="marca">Marca</label>
+                        <input id="marca" name="marca" type="text" maxlength="50">
+                    </div>
+                    <div>
+                        <label for="modelo">Modelo</label>
+                        <input id="modelo" name="modelo" type="text" maxlength="50">
+                    </div>
+                    <div>
+                        <label for="tipo">Tipo</label>
+                        <input id="tipo" name="tipo" type="text" maxlength="50" placeholder="ex: casual, esportivo">
+                    </div>
+                    <div>
+                        <label for="tamanho">Tamanho</label>
+                        <input id="tamanho" name="tamanho" type="text" maxlength="10">
+                    </div>
+                    <div>
+                        <label for="cor">Cor</label>
+                        <input id="cor" name="cor" type="text" maxlength="50">
+                    </div>
+                    <div class="full">
+                        <label for="observacoes">Observações</label>
+                        <textarea id="observacoes" name="observacoes" rows="4" maxlength="500" placeholder="Descreva manchas, rasgos ou pedidos especiais"></textarea>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div style="margin-top:12px;">
+                <button type="submit">Enviar Cadastro</button>
+                <a href="{{ url_for('index') }}" class="btn-link">Voltar</a>
+            </div>
+        </form>
+    </main>
+</body>
+</html>
